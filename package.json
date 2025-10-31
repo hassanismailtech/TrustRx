@@ -1,0 +1,27 @@
+{
+  "name": "trustrx",
+  "version": "1.0.0",
+  "description": "TrustRx is a decentralized, AI-powered health oracle designed for real-time outbreak detection, risk intelligence, and health data transparency in Nigeria and beyond.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hassanismailtech/TrustRx.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hassanismailtech/TrustRx/issues"
+  },
+  "homepage": "https://github.com/hassanismailtech/TrustRx#readme",
+  "dependencies": {
+    "@hashgraph/sdk": "^2.76.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
