@@ -26,3 +26,9 @@ test('PostgreSQL reviewer queue returns only reviewable signals with bounded pag
   assert.match(source, /input\.limit \+ 1/);
   assert.match(source, /integrity_status/);
 });
+
+test('PostgreSQL reviewer decisions atomically update state, decision evidence and audit trail', () => {
+  assert.match(source, /INSERT INTO review_decisions/);
+  assert.match(source, /Signal state changed before the review decision could be recorded/);
+  assert.match(source, /action: 'signal\.state_transition'/);
+});

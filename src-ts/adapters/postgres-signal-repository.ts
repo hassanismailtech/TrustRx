@@ -135,6 +135,27 @@ export class PostgresSignalRepository implements SignalRepository {
     });
   }
 
+  async recordDecision(input: { id: string; organisationId: string; signalId: string; reviewerRef: string; expectedState: SignalState; nextState: SignalState; rationale: string; decidedAt: string }): Promise<void> {
+    await this.withTenant(input.organisationId, async (client) => {
+      const updated = await client.query<{ id: string }>(
+        `UPDATE signal_reports SET state = $1, updated_at = now()
+          WHERE id = $2 AND state = $3 RETURNING id`,
+        [input.nextState, input.signalId, input.expectedState],
+      );
+      if (updated.rowCount !== 1) {
+        const error = new Error('Signal state changed before the review decision could be recorded');
+        error.name = 'SignalStateConflictError';
+        throw error;
+      }
+      await client.query(
+        `INSERT INTO review_decisions (id, organisation_id, signal_id, reviewer_ref, from_state, to_state, rationale, decided_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [input.id, input.organisationId, input.signalId, input.reviewerRef, input.expectedState, input.nextState, input.rationale, input.decidedAt],
+      );
+      await this.insertAudit(client, input.organisationId, { id: input.id, signalId: input.signalId, actorRef: input.reviewerRef, action: 'signal.state_transition', fromState: input.expectedState, toState: input.nextState, rationale: input.rationale, occurredAt: input.decidedAt });
+    });
+  }
+
   private async withTenant<T>(organisationId: string, work: (client: DatabaseClient) => Promise<T>): Promise<T> {
     const client = await this.pool.connect();
     try {
