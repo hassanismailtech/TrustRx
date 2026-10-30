@@ -9,6 +9,9 @@ process real health data or to provision a database.
 tenant-owned operational records. The runtime repository must set
 `app.organisation_id` inside every transaction and use a role that cannot bypass
 row-level security; this is verified against a real database before any pilot.
+`0004_idempotency_keys.sql` records a bounded idempotency key and one-way
+request fingerprint so telecom retries cannot create duplicate signals. It never
+stores raw message content.
 
 Before it is applied, the engineering owner must select the PostgreSQL provider,
 region, encryption/key-management model, backup/recovery controls, migration
