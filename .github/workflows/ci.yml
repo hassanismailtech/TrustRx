@@ -22,8 +22,9 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
+          fetch-depth: 0
       - name: Set up Node
-        uses: actions/setup-node@1e60f620b9541d4eb6ec2e2f81f3c4808e4b6b9f
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22.x
           cache: npm
@@ -34,7 +35,12 @@ jobs:
       - name: Typecheck replacement core
         run: npm run typecheck
       - name: Check whitespace
-        run: git diff --check HEAD~1 HEAD
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            git diff --check "${{ github.event.pull_request.base.sha }}" "$GITHUB_SHA"
+          else
+            git diff --check HEAD^ HEAD
+          fi
 
   dependency-audit:
     name: Audit production dependencies
@@ -46,7 +52,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Set up Node
-        uses: actions/setup-node@1e60f620b9541d4eb6ec2e2f81f3c4808e4b6b9f
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22.x
           cache: npm
