@@ -1,4 +1,5 @@
 import type { IntegrityCommitment, SignalReport, SignalState } from '../contracts/signal.js';
+import type { ReviewerQueueItem, ReviewerQueuePage } from '../contracts/reviewer-queue.js';
 import type { DatabaseClient, DatabasePool } from '../ports/database.js';
 import { classifyReplay } from '../domain/idempotency.js';
 import type { AuditEvent, CreateSignalRecord, IdempotentCreateResult, IdempotentSignalCreate, SignalRepository } from '../ports/signal-repository.js';
@@ -14,6 +15,17 @@ type SignalRow = {
   facility_ref: string;
   reporter_credential_ref: string | null;
   reported_at: Date | string;
+};
+
+type ReviewerQueueRow = {
+  signal_id: string;
+  facility_ref: string;
+  syndrome_code: string;
+  case_count: number;
+  severity: ReviewerQueueItem['severity'];
+  state: SignalState;
+  received_at: Date | string;
+  integrity_status: ReviewerQueueItem['integrityStatus'];
 };
 
 export class PostgresSignalRepository implements SignalRepository {
@@ -97,6 +109,29 @@ export class PostgresSignalRepository implements SignalRepository {
         [signalId],
       );
       return result.rows;
+    });
+  }
+
+  async listReviewerQueue(input: { organisationId: string; limit: number; before: string | null }): Promise<ReviewerQueuePage> {
+    return this.withTenant(input.organisationId, async (client) => {
+      const result = await client.query<ReviewerQueueRow>(
+        `SELECT s.id AS signal_id, f.facility_ref, s.syndrome_code, s.case_count, s.severity, s.state, s.received_at, ic.status AS integrity_status
+           FROM signal_reports s
+           JOIN facilities f ON f.id = s.facility_id
+           JOIN integrity_commitments ic ON ic.signal_id = s.id
+          WHERE s.state IN ('received', 'under_review')
+            AND ($1::timestamptz IS NULL OR s.received_at < $1::timestamptz)
+          ORDER BY s.received_at DESC, s.id DESC
+          LIMIT $2`,
+        [input.before, input.limit + 1],
+      );
+      const hasMore = result.rows.length > input.limit;
+      const rows = result.rows.slice(0, input.limit);
+      const finalRow = rows.at(-1);
+      return {
+        items: rows.map((row) => ({ signalId: row.signal_id, facilityRef: row.facility_ref, syndromeCode: row.syndrome_code, caseCount: row.case_count, severity: row.severity, state: row.state, receivedAt: new Date(row.received_at).toISOString(), integrityStatus: row.integrity_status })),
+        nextCursor: hasMore && finalRow ? new Date(finalRow.received_at).toISOString() : null,
+      };
     });
   }
 

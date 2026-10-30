@@ -19,3 +19,10 @@ test('PostgreSQL repository uses parameterized SQL and atomic state transitions'
   assert.match(source, /SignalStateConflictError/);
   assert.match(source, /INSERT INTO audit_events/);
 });
+
+test('PostgreSQL reviewer queue returns only reviewable signals with bounded pagination', () => {
+  assert.match(source, /WHERE s\.state IN \('received', 'under_review'\)/);
+  assert.match(source, /LIMIT \$2/);
+  assert.match(source, /input\.limit \+ 1/);
+  assert.match(source, /integrity_status/);
+});

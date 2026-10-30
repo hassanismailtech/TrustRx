@@ -12,6 +12,8 @@ row-level security; this is verified against a real database before any pilot.
 `0004_idempotency_keys.sql` records a bounded idempotency key and one-way
 request fingerprint so telecom retries cannot create duplicate signals. It never
 stores raw message content.
+`0005_message_delivery_reconciliation.sql` records delivery state and attempts
+without retaining message bodies, and supports controlled retry scheduling.
 
 Before it is applied, the engineering owner must select the PostgreSQL provider,
 region, encryption/key-management model, backup/recovery controls, migration
