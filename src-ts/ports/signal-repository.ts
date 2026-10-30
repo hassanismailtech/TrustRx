@@ -1,4 +1,5 @@
 import type { IntegrityCommitment, SignalReport, SignalState } from '../contracts/signal.js';
+import type { IdempotencyRequest } from '../domain/idempotency.js';
 
 export interface AuditEvent {
   id: string;
@@ -20,12 +21,22 @@ export interface CreateSignalRecord {
   audit: AuditEvent;
 }
 
+export interface IdempotentSignalCreate extends CreateSignalRecord {
+  idempotency: IdempotencyRequest;
+}
+
+export type IdempotentCreateResult =
+  | { kind: 'accepted'; signalId: string }
+  | { kind: 'replay'; signalId: string | null }
+  | { kind: 'conflict' };
+
 /**
  * The typed persistence boundary for the regulated core. Implementations must
  * provide tenant isolation, transactions and immutable audit storage.
  */
 export interface SignalRepository {
   create(input: CreateSignalRecord): Promise<void>;
+  createIdempotent(input: IdempotentSignalCreate): Promise<IdempotentCreateResult>;
   findById(organisationId: string, signalId: string): Promise<SignalReport | null>;
   transitionState(input: {
     organisationId: string;

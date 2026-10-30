@@ -1,6 +1,7 @@
 import type { IntegrityCommitment, SignalReport, SignalState } from '../contracts/signal.js';
 import type { DatabaseClient, DatabasePool } from '../ports/database.js';
-import type { AuditEvent, CreateSignalRecord, SignalRepository } from '../ports/signal-repository.js';
+import { classifyReplay } from '../domain/idempotency.js';
+import type { AuditEvent, CreateSignalRecord, IdempotentCreateResult, IdempotentSignalCreate, SignalRepository } from '../ports/signal-repository.js';
 
 type SignalRow = {
   id: string;
@@ -20,18 +21,32 @@ export class PostgresSignalRepository implements SignalRepository {
 
   async create(input: CreateSignalRecord): Promise<void> {
     await this.withTenant(input.organisationId, async (client) => {
-      await client.query(
-        `INSERT INTO signal_reports
-          (id, organisation_id, facility_id, reporter_credential_id, schema_version, state, syndrome_code, case_count, severity, reported_at, received_at, encrypted_detail)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL)`,
-        [input.signal.id, input.organisationId, input.facilityId, input.reporterCredentialId, input.signal.schemaVersion, input.signal.state, input.signal.syndromeCode, input.signal.caseCount, input.signal.severity, input.signal.reportedAt, input.signal.receivedAt],
+      await this.persistSignal(client, input);
+    });
+  }
+
+  async createIdempotent(input: IdempotentSignalCreate): Promise<IdempotentCreateResult> {
+    return this.withTenant(input.organisationId, async (client) => {
+      const existing = await client.query<{ request_fingerprint: string; status: 'reserved' | 'completed' | 'expired'; signal_id: string | null }>(
+        `SELECT request_fingerprint, status, signal_id FROM idempotency_keys
+          WHERE scope = $1 AND idempotency_key = $2 FOR UPDATE`,
+        [input.idempotency.scope, input.idempotency.key],
       );
+      if (existing.rows[0]) {
+        const decision = classifyReplay({ ...input.idempotency, requestFingerprint: existing.rows[0].request_fingerprint, status: existing.rows[0].status, signalId: existing.rows[0].signal_id }, input.idempotency.requestFingerprint);
+        return decision === 'conflict' ? { kind: 'conflict' } : { kind: 'replay', signalId: existing.rows[0].signal_id };
+      }
       await client.query(
-        `INSERT INTO integrity_commitments (id, signal_id, commitment, status, hcs_transaction_id, hcs_topic_id, anchored_at)
-         VALUES ($1, $2, $3, $4, NULL, NULL, NULL)`,
-        [input.integrity.id, input.signal.id, input.integrity.commitment, input.integrity.status],
+        `INSERT INTO idempotency_keys (id, organisation_id, scope, idempotency_key, request_fingerprint, status, signal_id, expires_at)
+         VALUES ($1, $2, $3, $4, $5, 'reserved', NULL, $6)`,
+        [input.idempotency.id, input.organisationId, input.idempotency.scope, input.idempotency.key, input.idempotency.requestFingerprint, input.idempotency.expiresAt],
       );
-      await this.insertAudit(client, input.organisationId, input.audit);
+      await this.persistSignal(client, input);
+      await client.query(
+        `UPDATE idempotency_keys SET status = 'completed', signal_id = $1, updated_at = now() WHERE id = $2`,
+        [input.signal.id, input.idempotency.id],
+      );
+      return { kind: 'accepted', signalId: input.signal.id };
     });
   }
 
@@ -107,6 +122,21 @@ export class PostgresSignalRepository implements SignalRepository {
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [audit.id, organisationId, audit.signalId, audit.actorRef, audit.action, audit.fromState, audit.toState, audit.rationale, audit.occurredAt],
     );
+  }
+
+  private async persistSignal(client: DatabaseClient, input: CreateSignalRecord): Promise<void> {
+    await client.query(
+      `INSERT INTO signal_reports
+        (id, organisation_id, facility_id, reporter_credential_id, schema_version, state, syndrome_code, case_count, severity, reported_at, received_at, encrypted_detail)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL)`,
+      [input.signal.id, input.organisationId, input.facilityId, input.reporterCredentialId, input.signal.schemaVersion, input.signal.state, input.signal.syndromeCode, input.signal.caseCount, input.signal.severity, input.signal.reportedAt, input.signal.receivedAt],
+    );
+    await client.query(
+      `INSERT INTO integrity_commitments (id, signal_id, commitment, status, hcs_transaction_id, hcs_topic_id, anchored_at)
+       VALUES ($1, $2, $3, $4, NULL, NULL, NULL)`,
+      [input.integrity.id, input.signal.id, input.integrity.commitment, input.integrity.status],
+    );
+    await this.insertAudit(client, input.organisationId, input.audit);
   }
 }
 

@@ -1,12 +1,22 @@
 export type IdempotencyStatus = 'reserved' | 'completed' | 'expired';
 
 export interface IdempotencyRecord {
+  id: string;
   organisationId: string;
   scope: 'signal_ingress';
   key: string;
   requestFingerprint: string;
   status: IdempotencyStatus;
   signalId: string | null;
+  expiresAt: string;
+}
+
+export interface IdempotencyRequest {
+  id: string;
+  organisationId: string;
+  scope: 'signal_ingress';
+  key: string;
+  requestFingerprint: string;
   expiresAt: string;
 }
 
