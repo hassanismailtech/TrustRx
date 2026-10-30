@@ -1,6 +1,6 @@
 # TrustRx: The Decentralized Health Oracle
 
-## 🌍 Overview
+## Overview
 TrustRx is a decentralized, AI-powered health oracle built on **Hedera Hashgraph** that enables **real-time outbreak detection**, **risk intelligence**, and **verifiable health data transparency**. Designed for Nigeria and scalable across Africa, TrustRx bridges the trust deficit in healthcare data by combining artificial intelligence, distributed ledger technology (DLT), and federated learning to produce tamper-proof epidemic intelligence.
 
 **Track:** DLT for Operations → *Healthcare Operations*  
@@ -14,7 +14,7 @@ TrustRx aligns with the **Healthcare Operations** sub-track under the **DLT for 
 
 ---
 
-## 🚨 Problem Statement
+## Problem Statement
 Africa's health systems face major gaps in disease surveillance and outbreak reporting:
 
 - **Fragmented data silos** between hospitals, labs, and ministries
@@ -28,7 +28,7 @@ TrustRx addresses these issues by introducing a **tamper-proof, transparent, and
 
 ---
 
-## 💡 Concept Summary
+## Concept Summary
 **TrustRx = AI + DLT + Public Health Intelligence**
 
 TrustRx functions as a **decentralized health oracle**, connecting hospital and diagnostic systems to a Hedera-powered data trust layer. AI algorithms continuously scan anonymized reports for anomaly patterns (e.g., unusual spikes in fever cases), generate confidence-weighted alerts, and log metadata hashes to the Hedera network — providing a verifiable proof-of-intelligence for every outbreak signal detected.
@@ -41,7 +41,7 @@ To enable institutions, regulators, and innovators to trust, share, and act on v
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
 ### 1. **Data Collection**
 Local health agents, medical facilities, or community reporters submit anonymized health case data:
@@ -59,10 +59,10 @@ An AI agent analyzes each submission in real-time to:
 
 ### 3. **Blockchain Verification**
 All data is timestamped and recorded on the **Hedera Consensus Service**, ensuring:
-- ✅ **Immutability** — Data cannot be altered or deleted
-- ✅ **Transparency** — All stakeholders can verify data authenticity
-- ✅ **Traceability** — Complete audit trail of all health reports
-- ✅ **Interoperability** — Standardized data format for cross-system integration
+- **Immutability** — Data cannot be altered or deleted
+- **Transparency** — All stakeholders can verify data authenticity
+- **Traceability** — Complete audit trail of all health reports
+- **Interoperability** — Standardized data format for cross-system integration
 
 ### 4. **Public Dashboard**
 Healthcare workers, government agencies, and NGOs can:
@@ -73,7 +73,7 @@ Healthcare workers, government agencies, and NGOs can:
 
 ---
 
-## ⚙️ System Architecture
+## System Architecture
 
 The system consists of **three integrated layers**:
 
@@ -96,7 +96,7 @@ The system consists of **three integrated layers**:
 
 ---
 
-## 🔗 Hedera Integration
+## Hedera Integration
 
 ### Technologies Used
 - **Hedera Consensus Service (HCS)** — Immutable message logging and timestamping
@@ -156,7 +156,7 @@ await new TopicMessageSubmitTransaction({
 
 ---
 
-## 🌍 Real-World Impact
+## Real-World Impact
 
 ### Target Use Cases
 1. **Outbreak Early Warning** — Detect disease clusters before they become epidemics
@@ -181,7 +181,7 @@ TrustRx addresses these challenges by providing a **low-cost, high-trust** solut
 
 ---
 
-## 🧠 AI Integration
+## AI Integration
 
 TrustRx uses a **real-time AI simulation engine** for this MVP, which can be extended with models trained on:
 
@@ -216,7 +216,7 @@ analyzeRiskLevel(cases, disease) {
 
 ---
 
-## 🛠️ Technical Architecture
+## Technical Architecture
 
 ### Stack
 - **Frontend:** Pure HTML/CSS/JavaScript (no framework dependencies)
@@ -240,7 +240,7 @@ TrustRx/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js v16+
@@ -273,7 +273,7 @@ node server.js
 
 ---
 
-## 📊 Demo Data
+## Demo Data
 
 The system comes with sample outbreak scenarios:
 - **Malaria in Ikeja** — High risk (82% confidence)
@@ -282,19 +282,19 @@ The system comes with sample outbreak scenarios:
 
 ---
 
-## 🧩 Key Features
+## Key Features
 
-- ✅ **AI-simulated outbreak detection system**
-- ✅ **Immutable event logging on Hedera Testnet**
-- ✅ **Transparent dashboard for health intelligence**
-- ✅ **Decentralized health oracle concept for epidemic trust**
-- ✅ **Real-time risk scoring with confidence metrics**
-- ✅ **Auto-configured Hedera credentials via .env**
-- ✅ **Complete audit trail for every health report**
+- **AI-simulated outbreak detection system**
+- **Immutable event logging on Hedera Testnet**
+- **Transparent dashboard for health intelligence**
+- **Decentralized health oracle concept for epidemic trust**
+- **Real-time risk scoring with confidence metrics**
+- **Auto-configured Hedera credentials via .env**
+- **Complete audit trail for every health report**
 
 ---
 
-## 🎯 Hackathon Track Alignment
+## Hackathon Track Alignment
 
 ### Healthcare Operations Track
 TrustRx directly addresses the challenge of **operational transparency and efficiency** in healthcare systems by:
@@ -307,7 +307,7 @@ TrustRx contributes to Hedera Africa Hackathon's mission by using **DLT for veri
 
 ---
 
-## 🔮 Future Roadmap
+## Future Roadmap
 
 ### Short-term
 - [ ] **TrustRx-Lite:** SMS-based system for rural clinic data reporting
@@ -330,14 +330,14 @@ TrustRx contributes to Hedera Africa Hackathon's mission by using **DLT for veri
 
 ---
 
-## 🧩 Partnerships and Integrations
+## Partnerships and Integrations
 
 **Local:** NCDC, LASUTH, Lagos Ministry of Health, Nigerian Blockchain Alliance  
 **Global:** WHO Digital Health Division, Africa CDC, Hedera, PATH
 
 ---
 
-## 💬 Inspiration
+## Inspiration
 
 TrustRx was inspired by the urgent need for trust and speed in epidemic intelligence during the Lassa Fever and COVID-19 crises. By combining AI's pattern detection with Hedera's verifiable data layer, it redefines how we perceive and share medical truth in real time.
 
@@ -360,7 +360,7 @@ node server.js
 
 ---
 
-## 👥 Team
+## Team
 
 **Hassan Ismail** — Developer & Medical Student (LASUCOM)  
 Medical Student | Health Tech Builder | Founder, Webibyte  
@@ -370,7 +370,7 @@ Medical Student | Health Tech Builder | Founder, Webibyte
 
 ---
 
-## 📄 License
+## License
 
 MIT License — Free to use, modify, and deploy
 
@@ -378,7 +378,7 @@ This project is licensed under the **MIT License**.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Hedera Africa team for the hackathon opportunity
 - LASUCOM community for healthcare insights
@@ -387,7 +387,7 @@ This project is licensed under the **MIT License**.
 
 ---
 
-## 🧠 References and Learning Resources
+## References and Learning Resources
 
 - Hedera JavaScript SDK Docs → [https://docs.hedera.com](https://docs.hedera.com)
 - Hedera Consensus Service → [https://docs.hedera.com/hedera/services/consensus-service](https://docs.hedera.com/hedera/services/consensus-service)
