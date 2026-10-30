@@ -22,3 +22,9 @@ made an external request. `acknowledged` requires target-system evidence.
 `failed` and `cancelled` are operational outcomes requiring review. A signal
 does not become `submitted_to_official_channel` merely because a handoff was
 queued.
+
+## Reliability boundary
+
+Creating a new handoff also creates a deduplicated `official_handoff` outbox
+event in the same private database transaction. A duplicate handoff request
+returns the existing record and does not create a second external action.

@@ -12,7 +12,14 @@ export class PostgresOfficialHandoffRepository implements OfficialHandoffReposit
          ON CONFLICT (organisation_id, target_profile_ref, correlation_ref) DO NOTHING RETURNING id, state`,
         [input.id, input.organisationId, input.signalId, input.requestedByRef, input.targetKind, input.targetProfileRef, input.correlationRef],
       );
-      if (inserted.rows[0]) return { kind: 'queued', ...inserted.rows[0] };
+      if (inserted.rows[0]) {
+        await client.query(
+          `INSERT INTO outbox_events (id, organisation_id, aggregate_ref, event_type, dedupe_ref, payload, state)
+           VALUES ($1, $2, $3, 'official_handoff', $4, $5::jsonb, 'pending')`,
+          [input.outboxEventId, input.organisationId, input.id, input.correlationRef, JSON.stringify({ handoffId: input.id })],
+        );
+        return { kind: 'queued', ...inserted.rows[0] };
+      }
       const existing = await client.query<{ id: string; state: OfficialHandoffState }>(
         `SELECT id, state FROM official_handoffs WHERE target_profile_ref = $1 AND correlation_ref = $2`, [input.targetProfileRef, input.correlationRef],
       );

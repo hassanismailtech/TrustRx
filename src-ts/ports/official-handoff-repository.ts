@@ -8,6 +8,7 @@ export interface QueueOfficialHandoff {
   targetKind: OfficialHandoffTarget;
   targetProfileRef: string;
   correlationRef: string;
+  outboxEventId: string;
 }
 
 export interface OfficialHandoffRepository {
