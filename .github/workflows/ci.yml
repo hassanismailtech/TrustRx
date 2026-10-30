@@ -37,7 +37,7 @@ jobs:
       - name: Check whitespace
         run: |
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-            git diff --check "$GITHUB_BASE_SHA" "$GITHUB_SHA"
+            git diff --check "${{ github.event.pull_request.base.sha }}" "$GITHUB_SHA"
           else
             git diff --check HEAD^ HEAD
           fi
