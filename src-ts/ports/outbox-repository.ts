@@ -13,7 +13,7 @@ export interface OutboxEvent {
 
 export interface OutboxRepository {
   enqueue(event: Omit<OutboxEvent, 'state' | 'attemptCount'>): Promise<{ kind: 'enqueued' | 'duplicate'; id: string }>;
-  claimDue(input: { workerRef: string; leaseSeconds: number; limit: number }): Promise<readonly OutboxEvent[]>;
-  complete(input: { id: string; organisationId: string; expectedState: 'processing' }): Promise<void>;
-  fail(input: { id: string; organisationId: string; expectedState: 'processing'; nextState: 'failed' | 'abandoned'; errorCode: string; availableAt: string | null }): Promise<void>;
+  claimDue(input: { organisationId: string; workerRef: string; leaseSeconds: number; limit: number }): Promise<readonly OutboxEvent[]>;
+  complete(input: { id: string; organisationId: string; workerRef: string; expectedState: 'processing' }): Promise<void>;
+  fail(input: { id: string; organisationId: string; workerRef: string; expectedState: 'processing'; nextState: 'failed' | 'abandoned'; errorCode: string; availableAt: string | null }): Promise<void>;
 }
