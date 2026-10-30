@@ -23,6 +23,7 @@ export interface CreateSignalRecord {
 
 export interface IdempotentSignalCreate extends CreateSignalRecord {
   idempotency: IdempotencyRequest;
+  integrityOutboxEventId: string;
 }
 
 export type IdempotentCreateResult =

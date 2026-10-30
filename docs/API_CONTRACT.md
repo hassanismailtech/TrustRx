@@ -19,6 +19,11 @@ Successful acceptance means `202 Accepted`: the event was structurally accepted
 and privately recorded. It does not mean it is verified, clinically true,
 escalated or delivered to an official system.
 
+When acceptance creates a new signal, the private transaction also creates a
+deduplicated integrity-anchor outbox event. A background worker may later anchor
+the non-sensitive commitment; acceptance does not promise that the anchor has
+already completed.
+
 ## Required controls before enabling ingress
 
 - Authenticated actor and tenant context.

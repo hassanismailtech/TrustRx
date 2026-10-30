@@ -9,6 +9,7 @@ const input = {
   integrity: { id: 'integrity-1', commitment: 'a'.repeat(64), status: 'pending', hcsReceipt: null },
   audit: { id: 'audit-1', signalId: 'signal-1', actorRef: 'credential-1', action: 'signal.received', fromState: null, toState: 'received', rationale: null, occurredAt: '2026-10-30T00:00:00.000Z' },
   idempotency: { id: 'idem-1', organisationId: 'org-1', scope: 'signal_ingress', key: 'ingress_0123456789abcdef', requestFingerprint: 'b'.repeat(64), expiresAt: '2026-11-01T00:00:00.000Z' },
+  integrityOutboxEventId: 'outbox-anchor-1',
 };
 
 test('ingress service authorises a reporter before atomically accepting an idempotent signal', async () => {

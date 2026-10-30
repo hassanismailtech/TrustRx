@@ -32,3 +32,9 @@ test('PostgreSQL reviewer decisions atomically update state, decision evidence a
   assert.match(source, /Signal state changed before the review decision could be recorded/);
   assert.match(source, /action: 'signal\.state_transition'/);
 });
+
+test('accepted idempotent signals atomically schedule integrity anchoring', () => {
+  assert.match(source, /'integrity_anchor'/);
+  assert.match(source, /integrityOutboxEventId/);
+  assert.match(source, /integrityCommitmentId/);
+});

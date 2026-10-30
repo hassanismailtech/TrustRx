@@ -12,6 +12,7 @@ export interface SignalIngressRequest {
   integrity: IntegrityCommitment;
   audit: AuditEvent;
   idempotency: IdempotencyRequest;
+  integrityOutboxEventId: string;
 }
 
 export class SignalIngressService {
@@ -34,6 +35,7 @@ export class SignalIngressService {
       integrity: request.integrity,
       audit: request.audit,
       idempotency: request.idempotency,
+      integrityOutboxEventId: request.integrityOutboxEventId,
     });
   }
 }

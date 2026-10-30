@@ -55,6 +55,11 @@ export class PostgresSignalRepository implements SignalRepository {
       );
       await this.persistSignal(client, input);
       await client.query(
+        `INSERT INTO outbox_events (id, organisation_id, aggregate_ref, event_type, dedupe_ref, payload, state)
+         VALUES ($1, $2, $3, 'integrity_anchor', $4, $5::jsonb, 'pending')`,
+        [input.integrityOutboxEventId, input.organisationId, input.signal.id, input.integrity.commitment, JSON.stringify({ signalId: input.signal.id, integrityCommitmentId: input.integrity.id })],
+      );
+      await client.query(
         `UPDATE idempotency_keys SET status = 'completed', signal_id = $1, updated_at = now() WHERE id = $2`,
         [input.signal.id, input.idempotency.id],
       );
