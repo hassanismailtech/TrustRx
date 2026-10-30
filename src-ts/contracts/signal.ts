@@ -36,6 +36,7 @@ export interface SignalReport {
 }
 
 export interface IntegrityCommitment {
+  id: string;
   commitment: string;
   status: 'pending' | 'anchored';
   hcsReceipt: { transactionId: string; topicId: string; status: string } | null;

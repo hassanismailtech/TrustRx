@@ -11,12 +11,21 @@ export interface AuditEvent {
   occurredAt: string;
 }
 
+export interface CreateSignalRecord {
+  organisationId: string;
+  facilityId: string;
+  reporterCredentialId: string | null;
+  signal: SignalReport;
+  integrity: IntegrityCommitment;
+  audit: AuditEvent;
+}
+
 /**
  * The typed persistence boundary for the regulated core. Implementations must
  * provide tenant isolation, transactions and immutable audit storage.
  */
 export interface SignalRepository {
-  create(signal: SignalReport, integrity: IntegrityCommitment, audit: AuditEvent): Promise<void>;
+  create(input: CreateSignalRecord): Promise<void>;
   findById(organisationId: string, signalId: string): Promise<SignalReport | null>;
   transitionState(input: {
     organisationId: string;
