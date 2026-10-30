@@ -1,0 +1,56 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test Node 22
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@1e60f620b9541d4eb6ec2e2f81f3c4808e4b6b9f
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
+      - name: Typecheck replacement core
+        run: npm run typecheck
+      - name: Check whitespace
+        run: git diff --check HEAD~1 HEAD
+
+  dependency-audit:
+    name: Audit production dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@1e60f620b9541d4eb6ec2e2f81f3c4808e4b6b9f
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Audit high severity production vulnerabilities
+        run: npm audit --omit=dev --audit-level=high
