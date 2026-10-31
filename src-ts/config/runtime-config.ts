@@ -3,6 +3,7 @@ export type RuntimeEnvironment = 'development' | 'test' | 'staging' | 'productio
 export interface RuntimeConfig {
   environment: RuntimeEnvironment;
   signalIngressEnabled: boolean;
+  outboxWorkerEnabled: boolean;
   databaseUrl: string | null;
   commitmentSecret: string | null;
   allowedOrigin: string | null;
@@ -17,6 +18,7 @@ export function loadRuntimeConfig(input: Record<string, string | undefined>): Ru
   const environment = (optional(input, 'TRUSTRX_ENVIRONMENT') || 'development') as RuntimeEnvironment;
   if (!['development', 'test', 'staging', 'production'].includes(environment)) configError('TRUSTRX_ENVIRONMENT is invalid');
   const signalIngressEnabled = optional(input, 'TRUSTRX_ENABLE_SIGNAL_INGRESS') === 'true';
+  const outboxWorkerEnabled = optional(input, 'TRUSTRX_ENABLE_OUTBOX_WORKER') === 'true';
   const databaseUrl = optional(input, 'DATABASE_URL');
   const commitmentSecret = optional(input, 'TRUSTRX_COMMITMENT_SECRET');
   const allowedOrigin = optional(input, 'TRUSTRX_ALLOWED_ORIGIN');
@@ -29,10 +31,11 @@ export function loadRuntimeConfig(input: Record<string, string | undefined>): Ru
     if (authenticationMode !== 'approved_adapter') configError('Enabled signal ingress requires an approved authentication adapter');
     if (!allowedOrigin || allowedOrigin === '*') configError('Enabled signal ingress requires an explicit non-wildcard origin');
   }
+  if (outboxWorkerEnabled && !databaseUrl) configError('Enabled outbox worker requires DATABASE_URL');
   if (environment === 'production' && signalIngressEnabled && !anchorValues.every(Boolean)) configError('Production ingress requires complete integrity anchor configuration');
-  return { environment, signalIngressEnabled, databaseUrl, commitmentSecret, allowedOrigin, authenticationMode, integrityAnchorConfigured: anchorValues.every(Boolean) };
+  return { environment, signalIngressEnabled, outboxWorkerEnabled, databaseUrl, commitmentSecret, allowedOrigin, authenticationMode, integrityAnchorConfigured: anchorValues.every(Boolean) };
 }
 
 export function safeReadiness(config: RuntimeConfig) {
-  return { environment: config.environment, signalIngress: config.signalIngressEnabled ? 'configured' : 'disabled', database: config.databaseUrl ? 'configured' : 'not_configured', authentication: config.authenticationMode, integrityAnchor: config.integrityAnchorConfigured ? 'configured' : 'not_configured' } as const;
+  return { environment: config.environment, signalIngress: config.signalIngressEnabled ? 'configured' : 'disabled', outboxWorker: config.outboxWorkerEnabled ? 'configured' : 'disabled', database: config.databaseUrl ? 'configured' : 'not_configured', authentication: config.authenticationMode, integrityAnchor: config.integrityAnchorConfigured ? 'configured' : 'not_configured' } as const;
 }

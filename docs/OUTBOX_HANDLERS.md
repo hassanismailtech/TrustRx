@@ -19,3 +19,13 @@ contain target credentials, hard-coded mapping, or partner payloads.
 Handlers throw stable uppercase error codes. The dispatcher records safe error
 codes and uses the transactional outbox retry/abandonment model. A failed handler
 is not an official-system rejection; reconciliation remains a human operation.
+
+## Worker lifecycle boundary
+
+`OutboxWorkerCycle` performs one bounded, tenant-explicit pass only when
+`TRUSTRX_ENABLE_OUTBOX_WORKER` is exactly `true` and a database is configured.
+It requires a validated worker reference, a non-empty allow-listed organisation
+scope, and a per-organisation cap. It does not discover tenants, poll forever,
+fork a process, schedule itself, or install handlers. The deployment owner must
+provide supervision, a reviewed tenant schedule, retry-alert handling and the
+approved integrity/handoff handlers.

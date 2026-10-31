@@ -4,7 +4,12 @@ const { loadRuntimeConfig, safeReadiness } = require('../build/config/runtime-co
 
 test('runtime defaults to fail-closed development configuration', () => {
   const config = loadRuntimeConfig({});
-  assert.deepEqual(safeReadiness(config), { environment: 'development', signalIngress: 'disabled', database: 'not_configured', authentication: 'disabled', integrityAnchor: 'not_configured' });
+  assert.deepEqual(safeReadiness(config), { environment: 'development', signalIngress: 'disabled', outboxWorker: 'disabled', database: 'not_configured', authentication: 'disabled', integrityAnchor: 'not_configured' });
+});
+
+test('outbox worker remains disabled by default and needs a private database when enabled', () => {
+  assert.throws(() => loadRuntimeConfig({ TRUSTRX_ENABLE_OUTBOX_WORKER: 'true' }), { name: 'InvalidRuntimeConfigurationError' });
+  assert.equal(loadRuntimeConfig({ TRUSTRX_ENABLE_OUTBOX_WORKER: 'true', DATABASE_URL: 'postgres://private' }).outboxWorkerEnabled, true);
 });
 
 test('enabled ingress requires database, secret, authentication and explicit origin', () => {
