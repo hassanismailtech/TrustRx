@@ -14,6 +14,19 @@ operational safeguards for an approved environment.
 5. Run synthetic smoke tests for ingestion, review, outbox and restore path.
 6. Record evidence in controlled operational documentation.
 
+## Code readiness gate
+
+`evaluateMigrationReadiness` checks only opaque references to controlled
+evidence. It requires all ordered migrations to have been reviewed, a distinct
+migration and runtime role, backup/restore verification, RLS verification,
+synthetic smoke-test evidence, and accountable-owner approval. It does not
+read a database, apply SQL, validate the evidence, or make a database safe.
+
+The references must point to controlled records outside this public repository.
+They must not contain participant data, credentials, connection strings or
+security-assessment detail. A `ready` result is an engineering checklist result,
+not authorisation to migrate or process health data.
+
 ## Prohibited shortcuts
 
 - No manual production schema edit.
