@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/hassanismailtech/TrustRx#readme",
   "dependencies": {
-    "@hashgraph/sdk": "^2.76.0",
+    "@hashgraph/sdk": "^2.81.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0"
@@ -31,5 +31,10 @@
   "devDependencies": {
     "@types/node": "22.10.1",
     "typescript": "5.9.3"
+  },
+  "overrides": {
+    "protobufjs": "^8.8.1",
+    "@grpc/grpc-js": "^1.14.7",
+    "@hashgraph/proto": "2.26.0-beta.3"
   }
 }
