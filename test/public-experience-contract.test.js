@@ -10,10 +10,19 @@ test('public experience exposes safe routed pages with shared design tokens', ()
   const css = read('public', 'assets', 'trustrx.css');
   assert.match(css, /--signal:#ff724c/);
   assert.match(css, /prefers-reduced-motion/);
-  for (const route of ['index.html', path.join('system', 'index.html'), path.join('trust', 'index.html'), path.join('pilot', 'index.html'), path.join('about', 'index.html'), path.join('research', 'index.html'), path.join('security', 'index.html'), path.join('privacy', 'index.html')]) {
+  for (const route of ['index.html', path.join('system', 'index.html'), path.join('trust', 'index.html'), path.join('pilot', 'index.html'), path.join('about', 'index.html'), path.join('research', 'index.html'), path.join('security', 'index.html'), path.join('privacy', 'index.html'), path.join('docs', 'index.html')]) {
     assert.match(read('public', route), /\/assets\/trustrx\.css/);
   }
   assert.doesNotMatch(read('public', 'index.html'), /privateKey|submit-case|health oracle/i);
+});
+
+test('documentation route is public-safe and provides an accessible path to curated source material', () => {
+  const docs = read('public', 'docs', 'index.html');
+  assert.match(docs, /Skip to content/);
+  assert.match(docs, /id="content"/);
+  assert.match(docs, /Publication boundary/);
+  assert.match(docs, /github\.com\/hassanismailtech\/TrustRx\/tree\/main\/docs/);
+  assert.doesNotMatch(docs, /privateKey|submit-case|patient record/i);
 });
 
 test('reviewer console prototype is kept outside deployable public assets and marked synthetic', () => {
