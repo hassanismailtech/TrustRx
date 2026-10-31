@@ -10,7 +10,7 @@ test('public experience exposes safe routed pages with shared design tokens', ()
   const css = read('public', 'assets', 'trustrx.css');
   assert.match(css, /--signal:#ff724c/);
   assert.match(css, /prefers-reduced-motion/);
-  for (const route of ['index.html', path.join('system', 'index.html'), path.join('trust', 'index.html'), path.join('pilot', 'index.html')]) {
+  for (const route of ['index.html', path.join('system', 'index.html'), path.join('trust', 'index.html'), path.join('pilot', 'index.html'), path.join('about', 'index.html'), path.join('research', 'index.html'), path.join('security', 'index.html'), path.join('privacy', 'index.html')]) {
     assert.match(read('public', route), /\/assets\/trustrx\.css/);
   }
   assert.doesNotMatch(read('public', 'index.html'), /privateKey|submit-case|health oracle/i);

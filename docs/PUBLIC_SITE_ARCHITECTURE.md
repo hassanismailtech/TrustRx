@@ -30,9 +30,9 @@ signals through the public site.
 | `/trust` | Privacy, integrity, human oversight and explicit non-claims | Planned |
 | `/pilot` | Pilot scope, engagement process and briefing request | Planned |
 | `/research` | Public-safe publications, methods and learning updates | Planned; no private evidence |
-| `/about` | Mission, founder story and contact | Planned |
-| `/security` | Responsible disclosure route and public-safe security posture | Planned |
-| `/privacy` | Website privacy notice | Requires legal review before publication |
+| `/about` | Mission and build posture | Draft implemented locally |
+| `/security` | Responsible disclosure route and public-safe security posture | Draft implemented locally |
+| `/privacy` | Current static-site privacy information | Draft implemented locally; formal notice requires legal review |
 | `/terms` | Website terms | Requires legal review before publication |
 | `/contact` | Accessible, non-sensitive contact route | Planned |
 | `/status` | Future public service-status page; never exposes pilot data | Deferred |
