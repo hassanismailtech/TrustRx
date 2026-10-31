@@ -1,29 +1,28 @@
-# Deployment Readiness
+# Deployment Readiness Evaluator
 
-## Current state
+## Status
 
-TrustRx is not approved for a real-data deployment. The runtime configuration
-loader is a fail-closed engineering control, not a deployment authorisation.
+**Pre-pilot checklist code; not an activation, release, or compliance approval.**
 
-## Required configuration gates
+`evaluateDeploymentReadiness` combines the repository's fail-closed runtime
+configuration with opaque references to controlled evidence. It requires a
+staging or production configuration with signal ingress, the outbox worker,
+database, approved authentication, and integrity anchoring configured. It also
+requires a complete migration-readiness result plus controlled review references
+for private infrastructure, transport security, identity provider,
+observability, incident response, and partner workflow approval.
 
-Enabled ingress requires a private database URL, commitment secret, explicit
-allowed origin and approved authentication adapter. Production ingress also
-requires a complete integrity-anchor configuration. Wildcard CORS and partial
-anchor configuration are rejected.
+## Meaning of the result
 
-## Required non-configuration gates
+`eligibleForOwnerReview: true` means the provided values meet this narrow
+code-level prerequisite list. It does not check whether the references are true,
+apply a migration, contact a provider, start a server, authorise processing, or
+release anything. A named accountable owner must still verify the underlying
+evidence and approve the next controlled action.
 
-- Approved database provider, region, processor terms and key-management model.
-- Migration execution, restore test, tenant-isolation test and least-privilege
-  runtime/database roles.
-- Provider webhook signature/replay protection, rate limiting and reconciliation.
-- DPIA, data-processing agreement, incident plan, operational owner and pilot
-  workflow approval.
-- Security review, synthetic load/recovery test and observability runbook.
+## Data boundary
 
-## Safe readiness endpoint
-
-Future health/readiness output may disclose component configuration state only.
-It must never disclose a connection string, secret, topic ID, account ID,
-facility, tenant, provider payload or internal error trace.
+Only short opaque record references may be supplied. Evidence records, facility
+details, participant information, security findings, credentials, connection
+strings, legal advice, and partner agreements stay in governed storage outside
+this public repository.
