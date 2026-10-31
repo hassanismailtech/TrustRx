@@ -9,7 +9,9 @@ provider mapping, facility, or credential record is included in this repository.
 signature/timestamp/replay boundary has verified the inbound transport. It asks
 an injected private resolver for a controlled reporter-credential binding and
 returns the minimum core context: reporter actor, organisation, permitted
-facility and credential ID. A rejected webhook, missing binding, inactive
+facility and credential IDs plus their expected structured protocol references.
+The subsequent authorised-protocol layer rejects any report whose facility or
+credential field does not match that binding. A rejected webhook, missing binding, inactive
 record, malformed record, or lookup failure returns only `null`.
 
 ## Data and workflow boundary

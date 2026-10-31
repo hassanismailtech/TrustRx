@@ -6,6 +6,8 @@ export interface AuthorisedReporterTransport {
   actor: ActorContext;
   facilityId: string;
   reporterCredentialId: string;
+  facilityRef: string;
+  reporterCredentialRef: string;
 }
 
 function validReference(value: string): boolean {
@@ -13,11 +15,11 @@ function validReference(value: string): boolean {
 }
 
 function toAuthorisedTransport(record: ReporterTransportIdentityRecord): AuthorisedReporterTransport | null {
-  if (!record.active || !validReference(record.subjectId) || !validReference(record.organisationId) || !validReference(record.facilityId) || !validReference(record.reporterCredentialId)) return null;
+  if (!record.active || !validReference(record.subjectId) || !validReference(record.organisationId) || !validReference(record.facilityId) || !validReference(record.reporterCredentialId) || !validReference(record.facilityRef) || !validReference(record.reporterCredentialRef)) return null;
   return {
     actor: { subjectId: record.subjectId, organisationId: record.organisationId, roles: ['reporter'], permittedFacilityIds: [record.facilityId], active: true },
-    facilityId: record.facilityId,
-    reporterCredentialId: record.reporterCredentialId,
+    facilityId: record.facilityId, reporterCredentialId: record.reporterCredentialId,
+    facilityRef: record.facilityRef, reporterCredentialRef: record.reporterCredentialRef,
   };
 }
 

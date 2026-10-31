@@ -7,6 +7,8 @@ export interface ReporterTransportIdentityRecord {
   organisationId: string;
   facilityId: string;
   reporterCredentialId: string;
+  facilityRef: string;
+  reporterCredentialRef: string;
   active: boolean;
 }
 
