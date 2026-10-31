@@ -6,6 +6,7 @@ const assert = require('node:assert/strict');
 const migration = fs.readFileSync(path.join(__dirname, '..', 'db', 'migrations', '0001_core_private_store.sql'), 'utf8');
 const auditMigration = fs.readFileSync(path.join(__dirname, '..', 'db', 'migrations', '0002_immutable_audit_events.sql'), 'utf8');
 const tenantMigration = fs.readFileSync(path.join(__dirname, '..', 'db', 'migrations', '0003_tenant_row_level_security.sql'), 'utf8');
+const replayMigration = fs.readFileSync(path.join(__dirname, '..', 'db', 'migrations', '0009_provider_webhook_replay_keys.sql'), 'utf8');
 
 test('private-store migration establishes tenant-scoped signal and audit records', () => {
   for (const table of ['organisations', 'facilities', 'reporter_credentials', 'signal_reports', 'integrity_commitments', 'audit_events']) {
@@ -28,4 +29,12 @@ test('tenant records are protected by database row-level security', () => {
     assert.match(tenantMigration, new RegExp(`ALTER TABLE ${table} ENABLE ROW LEVEL SECURITY`));
   }
   assert.match(tenantMigration, /signal_reports\.organisation_id = current_organisation_id\(\)/);
+});
+
+test('provider replay migration retains only opaque replay values and expiry', () => {
+  assert.match(replayMigration, /CREATE TABLE provider_webhook_replay_keys/);
+  assert.match(replayMigration, /provider_id text NOT NULL/);
+  assert.match(replayMigration, /replay_key text NOT NULL/);
+  assert.match(replayMigration, /expires_at timestamptz NOT NULL/);
+  assert.doesNotMatch(replayMigration, /\b(raw_body|signature|sender|health)_?\w*\s+(text|jsonb|bytea)/i);
 });

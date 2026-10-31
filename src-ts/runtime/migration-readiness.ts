@@ -1,4 +1,4 @@
-export const EXPECTED_MIGRATION_IDS = ['0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008'] as const;
+export const EXPECTED_MIGRATION_IDS = ['0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009'] as const;
 
 export interface MigrationReadinessEvidence {
   environment: 'staging' | 'production';

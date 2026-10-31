@@ -14,6 +14,10 @@ request fingerprint so telecom retries cannot create duplicate signals. It never
 stores raw message content.
 `0005_message_delivery_reconciliation.sql` records delivery state and attempts
 without retaining message bodies, and supports controlled retry scheduling.
+`0009_provider_webhook_replay_keys.sql` stores only provider-scoped opaque
+replay keys and expiry so inbound webhook replay prevention survives process
+restarts. It deliberately has no tenant key because tenant identity is not
+trusted until after provider authentication.
 
 Before it is applied, the engineering owner must select the PostgreSQL provider,
 region, encryption/key-management model, backup/recovery controls, migration
