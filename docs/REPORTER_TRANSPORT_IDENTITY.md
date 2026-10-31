@@ -24,7 +24,14 @@ phone number, free-text body, browser field, or unverified provider metadata.
 
 ## Deferred persistence decision
 
-The actual private registry adapter needs a reviewed data model, least-privilege
-query path, tenant isolation design, key-management approach for any reversible
-contact data, retention rules, and a partner-approved registration workflow.
-Those decisions are deliberately not guessed in a public codebase.
+The private registry baseline now defines `provider_reporter_bindings`, which
+stores a provider-normalised opaque sender reference—not a raw phone number—and
+enables tenant RLS for normal administration. Inbound resolution happens before
+the organisation is known, so it uses a narrowly scoped `SECURITY DEFINER`
+function that returns only an active minimum identity record. Public access is
+revoked; deployment must grant the runtime role `EXECUTE` on that function only,
+never cross-tenant table `SELECT`.
+
+The registration workflow, key-management approach for any reversible contact
+data, retention rules, actual provider normalisation, role grants, and
+partner-approved credential lifecycle remain controlled deployment decisions.
