@@ -25,6 +25,13 @@ test('documentation route is public-safe and provides an accessible path to cura
   assert.doesNotMatch(docs, /privateKey|submit-case|patient record/i);
 });
 
+test('static public experience has a safe, non-indexed missing-route fallback', () => {
+  const notFound = read('public', '404.html');
+  assert.match(notFound, /name="robots" content="noindex"/);
+  assert.match(notFound, /not accept health reports/i);
+  assert.match(notFound, /href="\/docs"/);
+});
+
 test('reviewer console prototype is kept outside deployable public assets and marked synthetic', () => {
   const prototype = read('frontend', 'reviewer-console', 'index.html');
   assert.match(prototype, /SYNTHETIC PROTOTYPE/);
